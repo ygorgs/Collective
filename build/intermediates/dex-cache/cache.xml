@@ -2,53 +2,53 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Yuri Cesar\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-android\1.1.4\129874135e6081269ace2312092031558865de12\bolts-android-1.1.4.jar"
+        jar="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="129874135e6081269ace2312092031558865de12">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\bolts-android-1.1.4-5250d227959843fea25f5550ccde4fc70075d5b7.jar" />
-    </item>
-    <item
-        jar="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\classes-98e29e913c796e99dd35b44b05ccfb348b99bcd1.jar" />
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\classes-898c7670953e3380be68be3029369474e1f09adb.jar" />
     </item>
     <item
         jar="C:\Users\Yuri Cesar\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-caf56aa2a14016d3e96cc11fd43760327f10c36f.jar" />
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-caf56aa2a14016d3e96cc11fd43760327f10c36f.jar" />
     </item>
     <item
-        jar="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.0\jars\classes.jar"
+        jar="C:\Users\Yuri Cesar\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-android\1.1.4\129874135e6081269ace2312092031558865de12\bolts-android-1.1.4.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="5b37cf49773f7f17aca9830efd3053b0cac56728">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\classes-17d49dc937482b8bf07b27b76c81667e026dde49.jar" />
+        sha1="129874135e6081269ace2312092031558865de12">
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\bolts-android-1.1.4-5250d227959843fea25f5550ccde4fc70075d5b7.jar" />
     </item>
     <item
-        jar="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
+        jar="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0-aaab2ef574b49a2c0a4d213ae8955f46796ece5d.jar" />
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\classes-3a476c9654891f27fd1c8bf7b0234861b8458d4c.jar" />
     </item>
     <item
-        jar="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\jars\classes.jar"
+        jar="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="0f254ec13d6671680482d2218f01ecf14dfa93e6">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\classes-0e92c3a962b01f8bf9da372f40b0114678548e61.jar" />
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\classes-60e82ceba7bc52a51f2ff5d533eb2dc7a19e6407.jar" />
     </item>
     <item
-        jar="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
+        jar="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="C:\Users\Yuri Cesar\Downloads\Collective-master\app\build\intermediates\pre-dexed\debug\classes-17e1ec3328930ccf07e9d619b261b6d9b4229a68.jar" />
+        sha1="5b37cf49773f7f17aca9830efd3053b0cac56728">
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\classes-15d35f918fcd65453e95f453783be6593c273ebc.jar" />
+    </item>
+    <item
+        jar="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="C:\Users\Yuri Cesar\AndroidStudioProjects\Collective\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0-e7297a298076f0693685370a1898d0802a610aca.jar" />
     </item>
 
 </items>
