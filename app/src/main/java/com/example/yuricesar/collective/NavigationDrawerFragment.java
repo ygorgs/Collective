@@ -2,6 +2,7 @@ package com.example.yuricesar.collective;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -192,6 +194,17 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
         ((NavigationDrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
+        switch (mCurrentSelectedPosition){
+            case 3:
+                sendEmail();
+                break;
+            case 4:
+                compartilhar(mDrawerList.getRootView());
+                break;
+
+        }
+        Log.d("Position", String.valueOf(mCurrentSelectedPosition));
+
     }
 
     public void openDrawer() {
@@ -348,4 +361,29 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             bmImage.setImageDrawable(new RoundImage(result));
         }
     }
+
+    private void compartilhar(View view) {
+        String texto = "Faca parte do Collective: (link do download)";
+
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_TEXT, texto);
+        i.setType("text/plain");
+
+        startActivity(i);
+    }
+
+    private void sendEmail(){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"ygor.gsan@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Problemas com Collective");
+        i.putExtra(Intent.EXTRA_TEXT   , "Vendo se isso funfa!");
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
