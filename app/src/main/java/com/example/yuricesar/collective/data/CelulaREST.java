@@ -22,6 +22,7 @@ public class CelulaREST {
     //TODO mudar o url
     private static String URI = "http://192.168.0.103:8080/Restful/collective";
     private UserInfo result = null;
+    private String r = "";
 
     /**
      *
@@ -145,7 +146,6 @@ public class CelulaREST {
         {
             public void run() {
 
-
                 JSONObject j = new JSONObject();
 
                 try {
@@ -154,6 +154,108 @@ public class CelulaREST {
                     j.put("longitude", longitude);
 
                     new WebService().post(URI + "/localizacao", j.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void userProximos() throws Exception {
+        new Thread(new Runnable()
+
+        {
+            public void run() {
+                //TODO mudar para o id do cliente
+                String idCliente = "oi";
+
+                JSONObject j = new JSONObject();
+                try {
+                    j.put("idCliente", idCliente);
+
+                    // Array de String que recebe o JSON do Web Service
+                    String[] json = new WebService().post(URI + "/geo", j.toString());
+
+                    if (json[0].equals("200")) {
+
+                        Gson gson = new Gson();
+
+                        JsonParser parser = new JsonParser();
+
+                        // Fazendo o parse do JSON para um JsonArray
+                        JsonArray array = parser.parse(json[1]).getAsJsonArray();
+
+                        for (int i = 0; i < array.size(); i++) {
+
+                            // Criando usuario com os dados do servidor
+                            result = gson.fromJson(array.get(i), UserInfo.class);
+                        }
+                    } else {
+                        try {
+                            throw new Exception(json[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void enviarMsg() throws Exception {
+        new Thread(new Runnable()
+
+        {
+            public void run() {
+                //TODO mudar para o id do cliente
+                String idCliente = "oi";
+                //TODO mudar para o id do destino
+                String idDestino = "ei";
+                //TODO mudar para a msg
+                String msg = "ie";
+
+                JSONObject j = new JSONObject();
+                try {
+                    j.put("idCliente", idCliente);
+                    j.put("idDestino", idDestino);
+                    j.put("msg", msg);
+
+                    // Array de String que recebe o JSON do Web Service
+                    new WebService().post(URI + "/enviar", j.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void receberMsg() throws Exception {
+        new Thread(new Runnable()
+
+        {
+            public void run() {
+                //TODO mudar para o id do cliente
+                String idCliente = "oi";
+
+                JSONObject j = new JSONObject();
+                try {
+                    j.put("idCliente", idCliente);
+
+                    // Array de String que recebe o JSON do Web Service
+                    String[] json = new WebService().post(URI + "/receber", j.toString());
+
+                    if (json[0].equals("200")) {
+
+                        r = json[1];
+                    } else {
+                        try {
+                            throw new Exception(json[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
