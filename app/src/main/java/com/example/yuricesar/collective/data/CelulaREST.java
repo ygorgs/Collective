@@ -1,5 +1,8 @@
 package com.example.yuricesar.collective.data;
 
+import android.location.Location;
+
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -129,6 +132,28 @@ public class CelulaREST {
 
                     // Array de String que recebe o JSON do Web Service
                     new WebService().post(URI + "/newfriend", j.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void atualizaLocalizacao(final String id, final double latitude, final double longitude) throws Exception {
+        new Thread(new Runnable()
+
+        {
+            public void run() {
+
+
+                JSONObject j = new JSONObject();
+
+                try {
+                    j.put("id", id);
+                    j.put("latitude", latitude);
+                    j.put("longitude", longitude);
+
+                    new WebService().post(URI + "/localizacao", j.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
