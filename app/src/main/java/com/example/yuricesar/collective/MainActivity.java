@@ -1,5 +1,6 @@
 package com.example.yuricesar.collective;
 
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -96,6 +97,9 @@ public class MainActivity extends ActionBarActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if( id == R.id.action_message) {
+            friendList();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -164,5 +168,18 @@ public class MainActivity extends ActionBarActivity
         mlocationRequest.setInterval(5000);
         mlocationRequest.setFastestInterval(2000);
         mlocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    private void friendList(){
+        Bundle extras = getIntent().getExtras();
+        String userId = (String) extras.get("ID");
+        Intent i = new Intent();
+        i.setClass(this, FriendsListActivity.class);
+        i.putExtra("UserId", userId);
+        try {
+            startActivity(i);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

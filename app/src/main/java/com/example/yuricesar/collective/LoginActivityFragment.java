@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.yuricesar.collective.data.CelulaREST;
+import com.example.yuricesar.collective.data.DataBaseHelper;
 import com.example.yuricesar.collective.data.UserInfo;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -97,6 +99,14 @@ public class LoginActivityFragment extends Fragment {
             request.setParameters(parameters);
             request.executeAsync();
 
+            if (!DataBaseHelper.getInstance(getActivity()).costainsUser(user.getId())) {
+                DataBaseHelper.getInstance(getActivity()).insertUser(user);
+                try {
+                    new CelulaREST().novoUsuario(user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override

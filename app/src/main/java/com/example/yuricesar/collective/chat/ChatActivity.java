@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.yuricesar.collective.R;
+import com.example.yuricesar.collective.data.CelulaREST;
+import com.example.yuricesar.collective.data.DataBaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +39,8 @@ public class ChatActivity  extends ActionBarActivity {
         setContentView(R.layout.chat_activity);
         Intent i = getIntent();
         Bundle extras = i.getExtras();
-        String user = (String)extras.get("userId");
-        String friendId = (String)extras.get("friendId");
+        final String user = (String)extras.get("userId");
+        final String friendId = (String)extras.get("friendId");
         String friendName = (String)extras.get("friendName");
 
 
@@ -50,7 +52,7 @@ public class ChatActivity  extends ActionBarActivity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    return sendChatMessager();
+                    return sendChatMessager(user, friendId);
                 }
                 return false;
             }
@@ -63,7 +65,7 @@ public class ChatActivity  extends ActionBarActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendChatMessager();
+                sendChatMessager(user, friendId);
             }
         });
 
@@ -80,12 +82,23 @@ public class ChatActivity  extends ActionBarActivity {
 
     }
 
-    private boolean sendChatMessager() {
-        adp.add(new ChatMessage(side, chatText.getText().toString()));
-        chatText.setText("");
-        side = !side;
+    private boolean sendChatMessager(String user, String friendId) {
+        if (!friendIsOn()) {
+            adp.add(new ChatMessage(side, chatText.getText().toString()));
+            chatText.setText("");
+            side = !side;
+        } else {
+            try {
+                new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return true;
     }
 
-
+    private boolean friendIsOn() {
+        //TODO verificar se ele esta off
+        return true;
+    }
 }

@@ -1,10 +1,11 @@
 package com.example.yuricesar.collective.data;
 
-import android.location.Location;
+import android.content.Context;
+import android.content.ContextWrapper;
 
-import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
@@ -21,8 +22,9 @@ public class CelulaREST {
 
     //TODO mudar o url
     private static String URI = "http://192.168.0.103:8080/Restful/collective";
-    private UserInfo result = null;
     private String r = "";
+    private UserInfo usuario = null;
+    private String remetente = "";
 
     /**
      *
@@ -32,25 +34,23 @@ public class CelulaREST {
      * @return UserInfo
      * @throws Exception
      */
-    public UserInfo recomendacao() throws Exception {
+    //TODO
+    public List<Object> recomendacao(final UserInfo user, final List<Category> categorias) throws Exception {
+        usuario = null;
+        final List<Double> intereses = new ArrayList<Double>();
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String id = "oi";
-                //TODO mudar para a lista de categorias q o usuario quer comparar
-                List<String> categorias = new ArrayList<>();
-
                 JSONArray jsonA = new JSONArray(categorias);
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("cliente", id);
+                    j.put("cliente", user.getId());
                     j.put("categorys", jsonA);
 
                     // Array de String que recebe o JSON do Web Service
                     String[] json = new WebService().post(URI + "/recomendacao", j.toString());
-
+                    //mudar
                     if (json[0].equals("200")) {
 
                         Gson gson = new Gson();
@@ -58,13 +58,12 @@ public class CelulaREST {
                         JsonParser parser = new JsonParser();
 
                         // Fazendo o parse do JSON para um JsonArray
-                        JsonArray array = parser.parse(json[1]).getAsJsonArray();
-
-                        for (int i = 0; i < array.size(); i++) {
-
-                            // Criando usuario com os dados do servidor
-                            result = gson.fromJson(array.get(i), UserInfo.class);
+                        JsonObject jsonObject = (JsonObject) parser.parse(json[1]);
+                        JsonArray jsonArray = (JsonArray) jsonObject.get("intereses");
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            intereses.add(Double.parseDouble(jsonArray.get(i).toString()));
                         }
+                        usuario = gson.fromJson(jsonObject.get("user"), UserInfo.class);
                     } else {
                         try {
                             throw new Exception(json[1]);
@@ -77,35 +76,24 @@ public class CelulaREST {
                 }
             }
         }).start();
+        List<Object> result = new ArrayList();
+        result.add(usuario);
+        result.add(intereses);
         return result;
     }
 
-    public void novoUsuario() throws Exception {
+    public void novoUsuario(final UserInfo user) throws Exception {
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String id = "oi";
-                //TODO mudar para o nome do cliente
-                String nome = "ei";
-                //TODO mudar para o email do cliente
-                String email = "ie";
-                //TODO mudar para o picture do cliente
-                String picture = "io";
-                //TODO mudar para o latitude do cliente
-                String latitude = "hue";
-                //TODO mudar para o longitude do cliente
-                String longitude = "br";
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("id", id);
-                    j.put("nome", nome);
-                    j.put("email", email);
-                    j.put("picture", picture);
-                    j.put("latitude", picture);
-                    j.put("longitude", picture);
+                    j.put("id", user.getId());
+                    j.put("nome", user.getName());
+                    j.put("email", user.getEmail());
+                    j.put("picture", user.getURLPicture());
 
                     // Array de String que recebe o JSON do Web Service
                     new WebService().post(URI + "/newuser", j.toString());
@@ -116,20 +104,16 @@ public class CelulaREST {
         }).start();
     }
 
-    public void novaAmizade() throws Exception {
+    public void novaAmizade(final UserInfo user, final UserInfo amigo) throws Exception {
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String idCliente = "oi";
-                //TODO mudar para o id do amigo
-                String idAmigo = "ei";
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", idCliente);
-                    j.put("idAmigo", idAmigo);
+                    j.put("idCliente", user.getId());
+                    j.put("idAmigo", amigo.getId());
 
                     // Array de String que recebe o JSON do Web Service
                     new WebService().post(URI + "/newfriend", j.toString());
@@ -161,17 +145,17 @@ public class CelulaREST {
         }).start();
     }
 
-    public void userProximos() throws Exception {
+    //TODO
+    public UserInfo userProximos(final UserInfo user) throws Exception {
+        usuario = null;
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String idCliente = "oi";
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", idCliente);
+                    j.put("idCliente", user.getId());
 
                     // Array de String que recebe o JSON do Web Service
                     String[] json = new WebService().post(URI + "/geo", j.toString());
@@ -188,7 +172,7 @@ public class CelulaREST {
                         for (int i = 0; i < array.size(); i++) {
 
                             // Criando usuario com os dados do servidor
-                            result = gson.fromJson(array.get(i), UserInfo.class);
+                            usuario = gson.fromJson(array.get(i), UserInfo.class);
                         }
                     } else {
                         try {
@@ -202,24 +186,20 @@ public class CelulaREST {
                 }
             }
         }).start();
+        return usuario;
     }
 
-    public void enviarMsg() throws Exception {
+    //TODO
+    public void enviarMsg(final UserInfo origem, final UserInfo destino, final String msg) throws Exception {
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String idCliente = "oi";
-                //TODO mudar para o id do destino
-                String idDestino = "ei";
-                //TODO mudar para a msg
-                String msg = "ie";
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", idCliente);
-                    j.put("idDestino", idDestino);
+                    j.put("idCliente", origem.getId());
+                    j.put("idDestino", destino.getId());
                     j.put("msg", msg);
 
                     // Array de String que recebe o JSON do Web Service
@@ -231,24 +211,29 @@ public class CelulaREST {
         }).start();
     }
 
-    public void receberMsg() throws Exception {
+    //TODO
+    public List<String> receberMsg(final UserInfo user) throws Exception {
+        r = "";
+        remetente = "";
         new Thread(new Runnable()
 
         {
             public void run() {
-                //TODO mudar para o id do cliente
-                String idCliente = "oi";
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", idCliente);
+                    j.put("idCliente", user.getId());
 
                     // Array de String que recebe o JSON do Web Service
                     String[] json = new WebService().post(URI + "/receber", j.toString());
 
                     if (json[0].equals("200")) {
 
-                        r = json[1];
+                        JsonParser parser = new JsonParser();
+                        JsonObject jsonObject = (JsonObject) parser.parse(json[1]);
+                        r = jsonObject.get("msg").toString();
+                        remetente = jsonObject.get("user").toString();
+
                     } else {
                         try {
                             throw new Exception(json[1]);
@@ -261,5 +246,9 @@ public class CelulaREST {
                 }
             }
         }).start();
+        List<String> saida = new ArrayList<String>();
+        saida.add(remetente);
+        saida.add(r);
+        return saida;
     }
 }

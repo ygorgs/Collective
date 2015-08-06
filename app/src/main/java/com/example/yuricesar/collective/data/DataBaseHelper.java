@@ -139,4 +139,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
         return friends;
     } */
+
+    public UserInfo getUser(String id) {
+        UserInfo result = null;
+        List<UserInfo> users = selectAllUsers();
+        for (UserInfo u: users) {
+            if (u.getId().equals(id)) {
+                result = u;
+            }
+        }
+        return result;
+    }
 }
