@@ -40,6 +40,7 @@ public class MainActivity extends ActionBarActivity
         setSupportActionBar(mToolbar);
 
         Bundle extras = getIntent().getExtras();
+        String id = (String) extras.get("ID");
         String nome = (String)extras.get("Nome");
         String picture = (String)extras.get("Picture");
         String email = (String)extras.get("Email");
@@ -49,7 +50,7 @@ public class MainActivity extends ActionBarActivity
                 getFragmentManager().findFragmentById(R.id.fragment_drawer);
         // Set up the drawer.
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
-        mNavigationDrawerFragment.setUserData(nome,email,picture);
+        mNavigationDrawerFragment.setUserData(id,nome,email,picture);
 
         callConecton();
         initLocationRequest();

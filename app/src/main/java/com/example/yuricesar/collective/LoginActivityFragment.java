@@ -75,6 +75,7 @@ public class LoginActivityFragment extends Fragment {
 
                                 Intent it = new Intent();
                                 it.setClass(getActivity(), MainActivity.class);
+                                it.putExtra("ID", user.getId());
                                 it.putExtra("Nome", user.getName());
                                 it.putExtra("Picture", user.getURLPicture());
                                 it.putExtra("Email", user.getEmail());

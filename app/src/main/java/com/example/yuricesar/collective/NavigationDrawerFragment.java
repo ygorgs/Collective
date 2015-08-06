@@ -72,6 +72,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    private String userId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +127,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public List<NavigationItem> getMenu() {
         List<NavigationItem> items = new ArrayList<NavigationItem>();
         items.add(new NavigationItem(getString(R.string.people), getResources().getDrawable(R.drawable.suggest)));
+        items.add(new NavigationItem("Amigos", getResources().getDrawable(R.drawable.friends)));
         items.add(new NavigationItem(getString(R.string.preferences), getResources().getDrawable(R.drawable.preferences)));
         items.add(new NavigationItem(getString(R.string.settings), getResources().getDrawable(R.drawable.settings)));
         items.add(new NavigationItem(getString(R.string.contact), getResources().getDrawable(R.drawable.contact)));
@@ -195,10 +198,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         }
         ((NavigationDrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
         switch (mCurrentSelectedPosition){
-            case 3:
-                sendEmail();
+            case 1:
+                friendList();
                 break;
             case 4:
+                sendEmail();
+                break;
+            case 5:
                 compartilhar(mDrawerList.getRootView());
                 break;
 
@@ -244,7 +250,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mActionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public void setUserData(String user, String email, String avatar) {
+    public void setUserData(String id, String user, String email, String avatar) {
+        this.userId = id;
         ImageView avatarContainer = (ImageView) mFragmentContainerView.findViewById(R.id.imgAvatar);
         ((TextView) mFragmentContainerView.findViewById(R.id.txtUserEmail)).setText(email);
         ((TextView) mFragmentContainerView.findViewById(R.id.txtUsername)).setText(user);
@@ -378,11 +385,22 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"ygor.gsan@gmail.com"});
         i.putExtra(Intent.EXTRA_SUBJECT, "Problemas com Collective");
-        i.putExtra(Intent.EXTRA_TEXT   , "Vendo se isso funfa!");
+        i.putExtra(Intent.EXTRA_TEXT, "Vendo se isso funfa!");
         try {
             startActivity(Intent.createChooser(i, "Send mail..."));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void friendList(){
+        Intent i = new Intent();
+        i.setClass(this.getActivity(), FriendsListActivity.class);
+        i.putExtra("UserId", userId);
+        try {
+            startActivity(i);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
