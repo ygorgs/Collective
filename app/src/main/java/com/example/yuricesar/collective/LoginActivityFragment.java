@@ -99,15 +99,19 @@ public class LoginActivityFragment extends Fragment {
             request.setParameters(parameters);
             request.executeAsync();
 
-            if (!DataBaseHelper.getInstance(getActivity()).costainsUser(user.getId())) {
-                DataBaseHelper.getInstance(getActivity()).insertUser(user);
-                try {
-                    new CelulaREST().novoUsuario(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            criarUser();
         }
+
+//        private void criarUser() {
+//            if (!DataBaseHelper.getInstance(getActivity()).costainsUser(user.getId())) {
+//                DataBaseHelper.getInstance(getActivity()).insertUser(user);
+//                try {
+//                    new CelulaREST().novoUsuario(user);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         @Override
         public void onCancel() {

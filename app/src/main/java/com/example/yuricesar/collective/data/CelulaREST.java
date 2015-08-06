@@ -34,7 +34,6 @@ public class CelulaREST {
      * @return UserInfo
      * @throws Exception
      */
-    //TODO
     public List<Object> recomendacao(final UserInfo user, final List<Category> categorias) throws Exception {
         usuario = null;
         final List<Double> intereses = new ArrayList<Double>();
@@ -145,9 +144,9 @@ public class CelulaREST {
         }).start();
     }
 
-    //TODO
-    public UserInfo userProximos(final UserInfo user) throws Exception {
+    public List<Object> userProximos(final UserInfo user) throws Exception {
         usuario = null;
+        final List<Double> intereses = new ArrayList<Double>();
         new Thread(new Runnable()
 
         {
@@ -167,13 +166,12 @@ public class CelulaREST {
                         JsonParser parser = new JsonParser();
 
                         // Fazendo o parse do JSON para um JsonArray
-                        JsonArray array = parser.parse(json[1]).getAsJsonArray();
-
-                        for (int i = 0; i < array.size(); i++) {
-
-                            // Criando usuario com os dados do servidor
-                            usuario = gson.fromJson(array.get(i), UserInfo.class);
+                        JsonObject jsonObject = (JsonObject) parser.parse(json[1]);
+                        JsonArray jsonArray = (JsonArray) jsonObject.get("intereses");
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            intereses.add(Double.parseDouble(jsonArray.get(i).toString()));
                         }
+                        usuario = gson.fromJson(jsonObject.get("user"), UserInfo.class);
                     } else {
                         try {
                             throw new Exception(json[1]);
@@ -186,10 +184,12 @@ public class CelulaREST {
                 }
             }
         }).start();
-        return usuario;
+        List<Object> result = new ArrayList();
+        result.add(usuario);
+        result.add(intereses);
+        return result;
     }
 
-    //TODO
     public void enviarMsg(final UserInfo origem, final UserInfo destino, final String msg) throws Exception {
         new Thread(new Runnable()
 
@@ -211,7 +211,6 @@ public class CelulaREST {
         }).start();
     }
 
-    //TODO
     public List<String> receberMsg(final UserInfo user) throws Exception {
         r = "";
         remetente = "";
