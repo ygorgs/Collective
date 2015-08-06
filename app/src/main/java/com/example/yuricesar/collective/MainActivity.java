@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity
         String picture = (String)extras.get("Picture");
         String email = (String)extras.get("Email");
 
-        user = DataBaseHelper.getInstance(this).getUser(id);
+            //user = DataBaseHelper.getInstance(this).getUser(id);
 
         // populate the navigation drawer
         mNavigationDrawerFragment = (NavigationDrawerFragment)

@@ -83,13 +83,13 @@ public class ChatActivity  extends ActionBarActivity {
     }
 
     private boolean sendChatMessager(String user, String friendId) {
-        if (!friendIsOn()) {
+        if (friendIsOn()) {
             adp.add(new ChatMessage(side, chatText.getText().toString()));
             chatText.setText("");
             side = !side;
         } else {
             try {
-                new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
+                //new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
