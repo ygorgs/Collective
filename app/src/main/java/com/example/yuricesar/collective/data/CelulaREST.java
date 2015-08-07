@@ -22,7 +22,7 @@ public class CelulaREST {
 
     //TODO mudar o url
     private static String URI = "http://192.168.0.103:8080/Restful/collective";
-    private String r = "";
+    private String result = "";
     private UserInfo usuario = null;
     private String remetente = "";
 
@@ -212,7 +212,7 @@ public class CelulaREST {
     }
 
     public List<String> receberMsg(final UserInfo user) throws Exception {
-        r = "";
+        result = "";
         remetente = "";
         new Thread(new Runnable()
 
@@ -230,7 +230,7 @@ public class CelulaREST {
 
                         JsonParser parser = new JsonParser();
                         JsonObject jsonObject = (JsonObject) parser.parse(json[1]);
-                        r = jsonObject.get("msg").toString();
+                        result = jsonObject.get("msg").toString();
                         remetente = jsonObject.get("user").toString();
 
                     } else {
@@ -247,7 +247,7 @@ public class CelulaREST {
         }).start();
         List<String> saida = new ArrayList<String>();
         saida.add(remetente);
-        saida.add(r);
+        saida.add(result);
         return saida;
     }
 }

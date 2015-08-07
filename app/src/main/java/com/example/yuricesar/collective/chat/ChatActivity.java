@@ -84,9 +84,7 @@ public class ChatActivity  extends ActionBarActivity {
 
     private boolean sendChatMessager(String user, String friendId) {
         if (friendIsOn()) {
-            adp.add(new ChatMessage(side, chatText.getText().toString()));
-            chatText.setText("");
-            side = !side;
+           //TODO enviar pro amigo
         } else {
             try {
                 //new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
@@ -94,6 +92,9 @@ public class ChatActivity  extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
+        adp.add(new ChatMessage(side, chatText.getText().toString()));
+        chatText.setText("");
+        side = !side;
         return true;
     }
 

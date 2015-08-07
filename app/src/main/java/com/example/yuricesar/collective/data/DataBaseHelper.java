@@ -150,4 +150,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return result;
     }
+
+    public UserInfo getUserName(String id) {
+        UserInfo result = null;
+        List<UserInfo> users = selectAllUsers();
+        for (UserInfo u: users) {
+            if (u.getName().equals(id)) {
+                result = u;
+            }
+        }
+        return result;
+    }
 }

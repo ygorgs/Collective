@@ -6,8 +6,11 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.yuricesar.collective.data.CelulaREST;
@@ -28,6 +32,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.InputStream;
 import java.util.List;
 
 
@@ -233,7 +238,11 @@ public class MainActivity extends ActionBarActivity
         Log.i("LOG", "onConnected(" + bundle + ")");
         Location l = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(l != null) {
-
+            try {
+                celulaREST.atualizaLocalizacao(user.getId(), l.getLatitude(), l.getLongitude());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Log.i("LOG", "Latitude: " + l.getLatitude());
             Log.i("LOG", "Longitude: " + l.getLongitude());
         }
@@ -248,7 +257,7 @@ public class MainActivity extends ActionBarActivity
     public void onLocationChanged(Location location) {
 
         try {
-            celulaREST.atualizaLocalizacao("MeuID", location.getLatitude(), location.getLongitude());
+            celulaREST.atualizaLocalizacao(user.getId(), location.getLatitude(), location.getLongitude());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -303,5 +312,35 @@ public class MainActivity extends ActionBarActivity
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
+    public ImageView imagem(UserInfo user) {
+        ImageView image = new ImageView(this);
+        new DownloadImageTask(image).execute(user.getURLPicture());
+        return image;
     }
 }
