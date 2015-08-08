@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.yuricesar.collective" >
+
         <uses-permission android:name="android.permission.INTERNET"/>
         <users-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+        <uses-permission android:name="android.permission.VIBRATE" />
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
         <application
             android:name=".MyApplication"
             android:allowBackup="true"
@@ -34,5 +38,24 @@
                     "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"
                 android:label="@string/app_name" />
+
+            <receiver
+                android:name=".chat.BroadcastReceiverAux"
+                android:label="BroadcastReceiverAux"
+                android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </receiver>
+            <service
+                android:name=".chat.ReceberMsg"
+                android:enabled="true"
+                android:exported="false" >
+                <intent-filter>
+                    <action android:name="SERVICE_MSG" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </service>
         </application>
     </manifest>

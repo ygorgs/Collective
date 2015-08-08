@@ -144,52 +144,6 @@ public class CelulaREST {
         }).start();
     }
 
-    public List<Object> userProximos(final UserInfo user) throws Exception {
-        usuario = null;
-        final List<Double> intereses = new ArrayList<Double>();
-        new Thread(new Runnable()
-
-        {
-            public void run() {
-
-                JSONObject j = new JSONObject();
-                try {
-                    j.put("idCliente", user.getId());
-
-                    // Array de String que recebe o JSON do Web Service
-                    String[] json = new WebService().post(URI + "/geo", j.toString());
-
-                    if (json[0].equals("200")) {
-
-                        Gson gson = new Gson();
-
-                        JsonParser parser = new JsonParser();
-
-                        // Fazendo o parse do JSON para um JsonArray
-                        JsonObject jsonObject = (JsonObject) parser.parse(json[1]);
-                        JsonArray jsonArray = (JsonArray) jsonObject.get("intereses");
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            intereses.add(Double.parseDouble(jsonArray.get(i).toString()));
-                        }
-                        usuario = gson.fromJson(jsonObject.get("user"), UserInfo.class);
-                    } else {
-                        try {
-                            throw new Exception(json[1]);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        List<Object> result = new ArrayList();
-        result.add(usuario);
-        result.add(intereses);
-        return result;
-    }
-
     public void enviarMsg(final UserInfo origem, final UserInfo destino, final String msg) throws Exception {
         new Thread(new Runnable()
 

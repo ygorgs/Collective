@@ -83,23 +83,14 @@ public class ChatActivity  extends ActionBarActivity {
     }
 
     private boolean sendChatMessager(String user, String friendId) {
-        if (friendIsOn()) {
-           //TODO enviar pro amigo
-        } else {
-            try {
-                //new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            //new CelulaREST().enviarMsg(DataBaseHelper.getInstance(this).getUser(user), DataBaseHelper.getInstance(this).getUser(friendId), chatText.getText().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         adp.add(new ChatMessage(side, chatText.getText().toString()));
         chatText.setText("");
         side = !side;
-        return true;
-    }
-
-    private boolean friendIsOn() {
-        //TODO verificar se ele esta off
         return true;
     }
 }
