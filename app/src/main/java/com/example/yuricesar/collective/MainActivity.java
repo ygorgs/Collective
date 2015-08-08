@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,9 +33,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity
@@ -50,10 +58,19 @@ public class MainActivity extends ActionBarActivity
     private CelulaREST celulaREST;
     private UserInfo user;
 
+    //ATRIBUTOS RECOMENDAÇÃO
+    private ArrayList<String> al;
+    private ArrayAdapter<String> arrayAdapter;
+    private int i;
+
+    @InjectView(R.id.frame)
+    SwipeFlingAdapterView flingContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
 
@@ -70,10 +87,85 @@ public class MainActivity extends ActionBarActivity
                 getFragmentManager().findFragmentById(R.id.fragment_drawer);
         // Set up the drawer.
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
-        mNavigationDrawerFragment.setUserData(id,nome,email,picture);
+        mNavigationDrawerFragment.setUserData(id, nome, email, picture);
 
         callConecton();
         initLocationRequest();
+
+        //RECOMENDAÇÃO
+        al = new ArrayList<>();
+        al.add("Felipe");
+        al.add("Diego");
+        al.add("Franklin");
+        al.add("Ygor");
+        al.add("Yuri");
+
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.user_name, al);
+
+        flingContainer.setAdapter(arrayAdapter);
+        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            @Override
+            public void removeFirstObjectInAdapter() {
+                // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                Log.d("LIST", "removed object!");
+                al.remove(0);
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onLeftCardExit(Object dataObject) {
+                //Do something on the left!
+                //You also have access to the original object.
+                //If you want to use it just cast it (String) dataObject
+                makeToast(MainActivity.this, "Esquerda!");
+            }
+
+            @Override
+            public void onRightCardExit(Object dataObject) {
+                makeToast(MainActivity.this, "Direita!");
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                // Ask for more data here
+                al.add("LES ".concat(String.valueOf(i)));
+                arrayAdapter.notifyDataSetChanged();
+                Log.d("LIST", "notified");
+                i++;
+            }
+
+            @Override
+            public void onScroll(float scrollProgressPercent) {
+                View view = flingContainer.getSelectedView();
+                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+            }
+        });
+
+        // Optionally add an OnItemClickListener
+        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                makeToast(MainActivity.this, "Clicado!");
+            }
+        });
+    }
+
+    static void makeToast(Context ctx, String s){
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.right)
+    public void right() {
+        /**
+         * Trigger the right event manually.
+         */
+        flingContainer.getTopCardListener().selectRight();
+    }
+
+    @OnClick(R.id.left)
+    public void left() {
+        flingContainer.getTopCardListener().selectLeft();
     }
 
     //TODO fazer isso sempre estar executando

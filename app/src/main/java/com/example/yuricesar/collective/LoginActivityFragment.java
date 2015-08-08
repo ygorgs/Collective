@@ -62,7 +62,6 @@ public class LoginActivityFragment extends Fragment {
                                 JSONObject object,
                                 GraphResponse response) {
                             try {
-
                                 user = new UserInfo();
                                 user.setName(profile.getName());
                                 user.setId(profile.getId());

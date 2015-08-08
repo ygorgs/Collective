@@ -10,15 +10,15 @@
     <Button
         android:id="@+id/left"
         android:layout_margin="10dp"
-        android:text="Esquerda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:background="@drawable/no_user"
+        android:layout_width="42dp"
+        android:layout_height="42dp"/>
 
     <Button
         android:id="@+id/right"
         android:layout_margin="10dp"
-        android:text="Direita"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:background="@drawable/ok_user"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
 
 </LinearLayout>
