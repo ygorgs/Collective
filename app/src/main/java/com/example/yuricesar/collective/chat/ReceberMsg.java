@@ -15,7 +15,12 @@ import android.util.Log;
 
 import com.example.yuricesar.collective.LoginActivity;
 import com.example.yuricesar.collective.R;
-import com.example.yuricesar.collective.data.UserInfo;
+import com.example.yuricesar.collective.data.CelulaREST;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 
 public class ReceberMsg extends Service {
@@ -42,40 +47,48 @@ public class ReceberMsg extends Service {
 
     class Worker extends Thread{
         public int startId;
-        public boolean ativo = true;
-        public String idCLiente;
+        public String idCliente;
         public Context context;
 
-        public Worker(int startId, String idCLiente, Context context){
+        public Worker(int startId, String idCliente, Context context){
             this.startId = startId;
-            this.idCLiente = idCLiente;
+            this.idCliente = idCliente;
             this.context = context;
         }
 
         public void run(){
-            while(ativo){
-                receberMsg(context, idCLiente);
-            }
+            receberMsg(context);
             stopSelf(startId);
         }
 
-        private void receberMsg(Context context, String id) {
-//            try {
-//                List<String> result = new CelulaREST().receberMsg(DataBaseHelper.getInstance(context).getUser(id));
-//                String msg = result.get(1);
-//                while (!msg.equals("")) {
-//                    notifyMessages(context);
-//                    chat(DataBaseHelper.getInstance(context).getUser(result.get(0)),msg);
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-            Log.d("teste", id);
+        private void receberMsg(Context context) {
+            try {
+                List<String> result = new CelulaREST().receberMsg(idCliente);
+                String idAmigo = result.get(0);
+                String msg = result.get(1);
+                if (!msg.equals("")) {
+                    notifyMessages(context);
+                    escreveArquivo(idCliente + "_" + idAmigo, idAmigo + ":" + msg);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        private void chat (UserInfo friend, String msg) {
-            //TODO mostrar as mensagens no chat
+        private void escreveArquivo (String arquivo, String msg) {
+            try{
+                FileOutputStream arquivoGravar = openFileOutput(arquivo + ".txt", MODE_APPEND);
+                arquivoGravar.write(msg.getBytes());
+                arquivoGravar.write("\n".getBytes());
+                arquivoGravar.close();
+                Log.d("arquivo", "Arquivo " + arquivo + " gravado com sucesso");
+            } catch (FileNotFoundException e) {
+                Log.e("arquivo", "Arquivo nao encontrado");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e("arquivo", "Erro de entrada e saida");
+                e.printStackTrace();
+            }
         }
 
         //TODO ajeitar
@@ -106,24 +119,6 @@ public class ReceberMsg extends Service {
             mBuilder.setContentIntent(resultPendingIntent);
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            //TODO naum testado, naum sei se precisa de um loop
-            int notifyID = 1;
-            int numMessages = 0;
-            mBuilder.setContentText(numMessages + "mensagens não lidas")
-                    .setNumber(++numMessages);
-            mNotificationManager.notify(
-                    notifyID,
-                    mBuilder.build());
-
-            // mId allows you to update the notification later on.
-            mNotificationManager.notify(001, mBuilder.build());
         }
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        thread.ativo = false;
     }
 }

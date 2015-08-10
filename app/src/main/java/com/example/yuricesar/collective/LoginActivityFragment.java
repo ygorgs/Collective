@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.yuricesar.collective.data.BD;
 import com.example.yuricesar.collective.data.CelulaREST;
-import com.example.yuricesar.collective.data.DataBaseHelper;
 import com.example.yuricesar.collective.data.UserInfo;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -44,7 +44,7 @@ public class LoginActivityFragment extends Fragment {
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
 
-    private Intent it;
+    private BD bd;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
@@ -74,6 +74,10 @@ public class LoginActivityFragment extends Fragment {
                                 getUserInterest(profile, "music", user);
                                 getUserInterest(profile, "television", user);
 
+                                criarUser();
+
+                                addAmigos();
+
                                 Intent it = new Intent();
                                 it.setClass(getActivity(), MainActivity.class);
                                 it.putExtra("ID", user.getId());
@@ -98,19 +102,20 @@ public class LoginActivityFragment extends Fragment {
             request.setParameters(parameters);
             request.executeAsync();
 
-//            criarUser();
+
         }
 
-//        private void criarUser() {
-//            if (!DataBaseHelper.getInstance(getActivity()).costainsUser(user.getId())) {
-//                DataBaseHelper.getInstance(getActivity()).insertUser(user);
-//                try {
-//                    new CelulaREST().novoUsuario(user);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
+        private void criarUser() {
+            if (!bd.containsUser(user.getId())) {
+                bd.insertUser(user);
+
+                try {
+                    new CelulaREST().novoUsuario(user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         @Override
         public void onCancel() {
@@ -122,6 +127,27 @@ public class LoginActivityFragment extends Fragment {
 
         }
     };
+
+    private void addAmigos(){
+        UserInfo ygor = new UserInfo();
+        ygor.setName("Ygor Santos");
+        ygor.setId("836885636398591");
+        ygor.setPicture("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-prn2/v/t1.0-1/c254.36.452.452/s50x50/945140_455330777887414_891839605_n.jpg?oh=321c9a6861239b67abd6f7b28f93f9ba&oe=563DDB8D&__gda__=1447440487_9bc4512ae9b4d57d8835fac0a465e845");
+        ygor.setEmail("ygor_gs@live.com");
+        criarUser(ygor);
+    }
+
+    private void criarUser(UserInfo u) {
+        if (!bd.containsUser(u.getId())) {
+            bd.insertUser(u);
+
+            try {
+                new CelulaREST().novoUsuario(u);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public LoginActivityFragment() {
 
@@ -151,6 +177,7 @@ public class LoginActivityFragment extends Fragment {
 
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
+        bd = new BD(getActivity());
     }
 
     @Override

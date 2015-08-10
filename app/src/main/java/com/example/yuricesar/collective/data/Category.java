@@ -6,6 +6,7 @@ public enum Category {
 	GAMES,
 	TV,
 	BOOKS,
-	MUSIC;
+	MUSIC,
+	LOCATION;
 
 }

@@ -1,24 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_gravity="center_horizontal|bottom"
     android:layout_marginBottom="20dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/left"
-        android:layout_margin="10dp"
-        android:background="@drawable/no_user"
-        android:layout_width="42dp"
-        android:layout_height="42dp"/>
+    <!--<Button-->
+        <!--android:id="@+id/left"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/no_user"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"/>-->
 
-    <Button
+    <!--<Button-->
+        <!--android:id="@+id/right"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/ok_user"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="48dp"/>-->
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_icon="@drawable/no_user"
+        fab:fab_colorNormal="@color/myPrimaryDarkColor"
+        fab:fab_colorPressed="@color/myPrimaryColor"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_size="mini"
+        fab:fab_icon="@drawable/plus"
+        fab:fab_colorNormal="@color/white"
+        fab:fab_colorPressed="@color/white_pressed"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/right"
-        android:layout_margin="10dp"
-        android:background="@drawable/ok_user"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_icon="@drawable/ok_user"
+        fab:fab_colorNormal="@color/myPrimaryDarkColor"
+        fab:fab_colorPressed="@color/myPrimaryColor"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
 
 </LinearLayout>

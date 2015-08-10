@@ -34,7 +34,7 @@ public class CelulaREST {
      * @return UserInfo
      * @throws Exception
      */
-    public List<Object> recomendacao(final UserInfo user, final List<Category> categorias) throws Exception {
+    public List<Object> recomendacao(final UserInfo user, final List<Category> categorias, final String distancia) throws Exception {
         usuario = null;
         final List<Double> intereses = new ArrayList<Double>();
         new Thread(new Runnable()
@@ -46,6 +46,7 @@ public class CelulaREST {
                 try {
                     j.put("cliente", user.getId());
                     j.put("categorys", jsonA);
+                    j.put("distancia", distancia);
 
                     // Array de String que recebe o JSON do Web Service
                     String[] json = new WebService().post(URI + "/recomendacao", j.toString());
@@ -144,7 +145,7 @@ public class CelulaREST {
         }).start();
     }
 
-    public void enviarMsg(final UserInfo origem, final UserInfo destino, final String msg) throws Exception {
+    public void enviarMsg(final String origem, final String destino, final String msg) throws Exception {
         new Thread(new Runnable()
 
         {
@@ -152,8 +153,8 @@ public class CelulaREST {
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", origem.getId());
-                    j.put("idDestino", destino.getId());
+                    j.put("idCliente", origem);
+                    j.put("idDestino", destino);
                     j.put("msg", msg);
 
                     // Array de String que recebe o JSON do Web Service
@@ -165,7 +166,7 @@ public class CelulaREST {
         }).start();
     }
 
-    public List<String> receberMsg(final UserInfo user) throws Exception {
+    public List<String> receberMsg(final String user) throws Exception {
         result = "";
         remetente = "";
         new Thread(new Runnable()
@@ -175,7 +176,7 @@ public class CelulaREST {
 
                 JSONObject j = new JSONObject();
                 try {
-                    j.put("idCliente", user.getId());
+                    j.put("idCliente", user);
 
                     // Array de String que recebe o JSON do Web Service
                     String[] json = new WebService().post(URI + "/receber", j.toString());

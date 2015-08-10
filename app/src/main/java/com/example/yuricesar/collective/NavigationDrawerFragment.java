@@ -201,6 +201,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             case 1:
                 friendList();
                 break;
+            case 2:
+                preferencias();
+                break;
+            case 3:
+                settings();
+                break;
             case 4:
                 sendEmail();
                 break;
@@ -404,4 +410,23 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         }
     }
 
+    private void preferencias() {
+        Intent i = new Intent();
+        i.setClass(this.getActivity(), PreferenceActivity.class);
+        try {
+            startActivity(i);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void settings() {
+        Intent i = new Intent();
+        i.setClass(this.getActivity(), SettingsActivity.class);
+        try {
+            startActivity(i);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

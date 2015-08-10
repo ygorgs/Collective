@@ -11,4 +11,5 @@
     <string name="contact">Fale conosco</string>
     <string name="share">Convide seus amigos</string>
     <string name="people">Pessoas sugeridas</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>

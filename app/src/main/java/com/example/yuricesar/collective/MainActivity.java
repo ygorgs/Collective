@@ -1,9 +1,7 @@
 package com.example.yuricesar.collective;
 
-import android.annotation.TargetApi;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,24 +9,24 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.yuricesar.collective.data.BD;
 import com.example.yuricesar.collective.data.CelulaREST;
-import com.example.yuricesar.collective.data.DataBaseHelper;
+import com.example.yuricesar.collective.data.PreferenceAuxiliar;
 import com.example.yuricesar.collective.data.UserInfo;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -37,6 +35,7 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -46,7 +45,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends ActionBarActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, NavigationDrawerCallbacks {
+        LocationListener, NavigationDrawerCallbacks, View.OnClickListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -57,11 +56,13 @@ public class MainActivity extends ActionBarActivity
     private LocationRequest mlocationRequest;
     private CelulaREST celulaREST;
     private UserInfo user;
+    private BD bd;
 
     //ATRIBUTOS RECOMENDAÇÃO
+    private UserInfo candidato;
+    private List<Double> interesesCandidato;
     private ArrayList<String> al;
     private ArrayAdapter<String> arrayAdapter;
-    private int i;
 
     @InjectView(R.id.frame)
     SwipeFlingAdapterView flingContainer;
@@ -80,7 +81,8 @@ public class MainActivity extends ActionBarActivity
         String picture = (String)extras.get("Picture");
         String email = (String)extras.get("Email");
 
-        //user = DataBaseHelper.getInstance(this).getUser(id);
+        bd = new BD(this);
+        user = bd.getUser(id);
 
         // populate the navigation drawer
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -89,24 +91,48 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         mNavigationDrawerFragment.setUserData(id, nome, email, picture);
 
+        FloatingActionButton b = (FloatingActionButton) findViewById(R.id.plus);
+        b.setOnClickListener(this);
+
         callConecton();
         initLocationRequest();
 
         //receber msgs
-        Intent it = new Intent("SERVICE_MSG");
-        it.putExtra("id", id);
-        startService(it);
+        boolean alarmeAtivo = (PendingIntent.getBroadcast(this, 0, new Intent("SERVICE_MSG"), PendingIntent.FLAG_NO_CREATE) == null);
+
+        if(alarmeAtivo){
+
+            Intent it = new Intent("SERVICE_MSG");
+            it.putExtra("id", id);
+            PendingIntent p = PendingIntent.getBroadcast(this, 0, it, 0);
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(System.currentTimeMillis());
+            c.add(Calendar.SECOND, 1);
+
+            AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarme.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), 500, p);
+        }
 
         //RECOMENDAÇÃO
-        al = new ArrayList<>();
-        al.add("Felipe");
-        al.add("Diego");
-        al.add("Franklin");
-        al.add("Ygor");
-        al.add("Yuri");
+        try {
+            List<Object> result = celulaREST.recomendacao(user, PreferenceAuxiliar.getInstace().getCategoriasSelecionadas(), PreferenceAuxiliar.getInstace().getDistancia());
+            candidato = (UserInfo) result.get(0);
+            interesesCandidato = (List<Double>) result.get(1);
+//            List<Object> result2 = celulaREST.recomendacao(user, new ArrayList<Category>());
+//            UserInfo candidato2 = (UserInfo) result2.get(0);
+//            List<Double> intereses2 = (List<Double>) result2.get(1);
+            al = new ArrayList<>();
+            if (candidato != null && candidato.getName() != null) {
+                al.add(candidato.getName());
+//                al.add(imagem(candidato));
+            }
+//            al.add(imagem(candidato2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.user_name, al);
-
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -122,21 +148,28 @@ public class MainActivity extends ActionBarActivity
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                makeToast(MainActivity.this, "Esquerda!");
+                makeToast(MainActivity.this, "Recusado!");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                makeToast(MainActivity.this, "Direita!");
+                makeToast(MainActivity.this, "Aceito!");
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                al.add("LES ".concat(String.valueOf(i)));
-                arrayAdapter.notifyDataSetChanged();
+                try {
+                    List<Object> result = celulaREST.recomendacao(user, PreferenceAuxiliar.getInstace().getCategoriasSelecionadas(), PreferenceAuxiliar.getInstace().getDistancia());
+                    candidato = (UserInfo) result.get(0);
+                    interesesCandidato = (List<Double>) result.get(1);
+                    al.add(candidato.getName());
+//                    al.add(imagem(candidato));
+                    arrayAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Log.d("LIST", "notified");
-                i++;
             }
 
             @Override
@@ -144,6 +177,7 @@ public class MainActivity extends ActionBarActivity
                 View view = flingContainer.getSelectedView();
                 view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
                 view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                Log.d("teste", "passou");
             }
         });
 
@@ -151,9 +185,37 @@ public class MainActivity extends ActionBarActivity
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                makeToast(MainActivity.this, "Clicado!");
+                chamaPerfil();
             }
         });
+        Log.d("teste", "gg");
+    }
+
+    @Override
+    public void onClick(View v) {
+        chamaPerfil();
+    }
+
+    private void chamaPerfil() {
+        Intent it = new Intent();
+        it.setClass(MainActivity.this, ProfileActivity.class);
+        try {
+            //TODO bug: se eu adicionar outro cara no oncreat, ele naum vai aparecer aki
+            it.putExtra("nameUser", candidato.getName());
+            it.putExtra("affinityLevel", media());
+            startActivity(it);
+        }catch(Exception e) {
+            makeToast(MainActivity.this, e.getMessage());
+        }
+    }
+
+    //TODO melhorar esse calculo
+    private double media () {
+        double soma = 0;
+        for (int i = 0; i < interesesCandidato.size(); i++) {
+            soma += interesesCandidato.get(i);
+        }
+        return soma/interesesCandidato.size();
     }
 
     static void makeToast(Context ctx, String s){
@@ -162,9 +224,12 @@ public class MainActivity extends ActionBarActivity
 
     @OnClick(R.id.right)
     public void right() {
-        /**
-         * Trigger the right event manually.
-         */
+        try {
+            celulaREST.novaAmizade(user,candidato);
+            bd.inserirAmigo(user,candidato);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         flingContainer.getTopCardListener().selectRight();
     }
 
@@ -227,11 +292,11 @@ public class MainActivity extends ActionBarActivity
         Log.i("LOG", "onConnected(" + bundle + ")");
         Location l = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(l != null) {
-            try {
-                celulaREST.atualizaLocalizacao(user.getId(), l.getLatitude(), l.getLongitude());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                celulaREST.atualizaLocalizacao(user.getId(), l.getLatitude(), l.getLongitude());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             Log.i("LOG", "Latitude: " + l.getLatitude());
             Log.i("LOG", "Longitude: " + l.getLongitude());
         }
@@ -245,11 +310,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onLocationChanged(Location location) {
 
-        try {
-            celulaREST.atualizaLocalizacao(user.getId(), location.getLatitude(), location.getLongitude());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            celulaREST.atualizaLocalizacao(user.getId(), location.getLatitude(), location.getLongitude());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

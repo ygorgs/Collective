@@ -25,8 +25,9 @@ public class WebService {
         HttpResponse response;
 
         try {
-
+            Log.d("teste", "antes");
             response = HttpClientSingleton.getHttpClientInstace().execute(httpget);
+            Log.d("teste", "depois");
             HttpEntity entity = response.getEntity();
 
             if (entity != null) {
